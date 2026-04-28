@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login - Study Group App</title>
+
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+  <!-- NAVBAR (reusing your existing styles) -->
+  <nav class="navbar">
+    <div class="logo">StudyGroup</div>
+
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="signup.html">Sign Up</a></li>
+    </ul>
+  </nav>
+
+  <!-- LOGIN FORM -->
+  <section class="form-section">
+
+    <h2>Login</h2>
+
+    <form class="group-form" id="loginForm">
+
+      <input 
+        type="text" 
+        id="email" 
+        name="email" 
+        placeholder="Email" 
+        required 
+      />
+
+      <input 
+        type="password" 
+        id="password" 
+        name="password" 
+        placeholder="Password" 
+        required 
+      />
+
+      <button type="button" class="primary-btn" onclick="login()">
+        Login
+      </button>
+
+      <p id="message"></p>
+
+    </form>
+
+  </section>
+
+  <script>
+    function login() {
+        event.preventDefault();
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+
+    fetch("http://localhost:8080/users/login", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            email: email,
+            password: password
+        })
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error("Invalid login");
+        }
+        return response.json();
+    })
+    .then(user => {
+        document.getElementById("message").innerText =
+            "Welcome " + user.name;
+
+        // optional: save login state
+        localStorage.setItem("userId", user.id);
+    })
+    .catch(error => {
+        document.getElementById("message").innerText =
+            "Login failed";
+    });
+}
+  </script>
+
+</body>
+</html>

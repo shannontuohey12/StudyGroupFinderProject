@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Study Group</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- NAVBAR -->
+    <nav class="navbar">
+        <h1 class="logo">StudyNest</h1>
+        <ul class="nav-links">
+            <li><a href="home.html">Home</a></li>
+        </ul>
+    </nav>
+
+    <!-- FORM SECTION -->
+    <section class="form-section">
+        <h2>Create a Study Group</h2>
+
+        <form id="createStudyGroupForm" class="group-form">
+
+            <input type="text" id="title" placeholder="Group Name" required>
+
+            <input type="text" id="subject" placeholder="Subject (e.g. CS, Math)" required>
+
+            <input type="date" id="date" required>
+
+            <input type="time" id="time" required>
+
+            <button type="button" class="primary-btn" onclick="createGroup()">Create Group</button>
+
+        </form>
+
+        <p id="groupMessage"></p>
+    </section>
+
+    <script>
+        function createGroup() {
+            event.preventDefault();
+
+    const title = document.getElementById("title").value;
+    const subject = document.getElementById("subject").value;
+    const description = document.getElementById("date").value;
+    const maxMembers = document.getElementById("time").value;
+
+    fetch("http://localhost:8080/groups", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            title: title,
+            subject: subject,
+            date: date,
+            time: time
+        })
+    })
+    .then(res => {
+        if (!res.ok) throw new Error("Failed to create group");
+        return res.json();
+    })
+    .then(group => {
+        document.getElementById("groupMessage").innerText =
+            "Group created: " + group.title;
+
+        // optional: clear form
+        document.getElementById("title").value = "";
+        document.getElementById("subject").value = "";
+        document.getElementById("date").value = "";
+        document.getElementById("time").value = "";
+    })
+    .catch(err => {
+        document.getElementById("groupMessage").innerText =
+            "Error creating group";
+        console.log(err);
+    });
+}
+
+    </script>
+
+</body>
+</html>
