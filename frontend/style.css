@@ -120,6 +120,7 @@
     text-align: center;
     box-shadow: 0 4px 12px rgba(0,0,0,0.08);
     transition: 0.2s;
+
 }
 
 .feature-card:hover {
@@ -186,4 +187,64 @@ footer {
 #statusMessage {
     margin-top: 15px;
     font-weight: 500;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+/* LOGIN EXTRA SECTION */
+.login-extra {
+    background-color: var(--orange);
+    padding: 60px 20px;
+    display: flex;
+    justify-content: center;
+}
+
+.login-extra-content {
+    max-width: 600px;
+    text-align: center;
+    color: white;
+}
+
+.login-extra-content h3 {
+    font-size: 26px;
+    margin-bottom: 20px;
+}
+
+.login-extra-content ul {
+    list-style: none;
+    padding: 0;
+    margin-bottom: 25px;
+    line-height: 1.8;
+}
+
+.login-extra-content ul li {
+    font-size: 16px;
+}
+
+/* make button pop on orange */
+.login-extra .secondary-btn {
+    border-color: 5b8bf1;
+    color: #5b8bf1;
+}
+
+.login-extra .secondary-btn:hover {
+    background-color: 5b8bf1;
+    color: white
+}
+
+/* SEARCH HELP TEXT */
+.search-help {
+    margin-top: 15px;
+    text-align: center;
+    color: #fafafa;
+    background-color: #f97316;
+    padding: 30px;
+    
+}
+
+.search-help strong {
+    color: #c7d9ff;
 }

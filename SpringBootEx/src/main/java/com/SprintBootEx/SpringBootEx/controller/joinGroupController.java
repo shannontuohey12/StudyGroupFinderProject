@@ -38,6 +38,16 @@ public class joinGroupController {
     public void deleteGroup(@PathVariable Long groupId) {
     groupService.deleteGroup(groupId);
 }
+// New endpoint for searching groups by name
+    @GetMapping("/search")
+public List<StudyGroup> searchGroups(@RequestParam(required = false) String query) {
+    if (query == null || query.isEmpty()) {
+        return studyGroupRepository.findAll();
+    }
+
+    return studyGroupRepository
+        .findByTitleContainingIgnoreCaseOrSubjectContainingIgnoreCase(query, query);
+}
 
     @PostMapping("/{groupId}/join/{userId}")
     public StudyGroup joinGroup(
