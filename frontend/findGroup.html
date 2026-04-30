@@ -64,33 +64,39 @@ function searchGroups() {
                 results.innerHTML = "<p style='text-align:center; color: var(--gray);'>No groups found 😕</p>";
                 return;
             }
-
+            const joinedGroups = JSON.parse(localStorage.getItem("joinedGroups")) || [];
             groups.forEach(group => {
-                const card = document.createElement("div");
+    const isJoined = joinedGroups.includes(group.id);
 
-                card.style.background = "white";
-                card.style.padding = "15px";
-                card.style.borderRadius = "10px";
-                card.style.boxShadow = "0 4px 10px rgba(0,0,0,0.08)";
-                card.style.marginBottom = "15px";
-                card.style.display = "flex";
-                card.style.justifyContent = "space-between";
-                card.style.alignItems = "center";
+    const card = document.createElement("div");
 
-                card.innerHTML = `
-                <div>
-                    <strong style="color: var(--blue);">${group.title}</strong><br>
-                    <small style="color: var(--gray);">
-                    ${group.subject} • ${group.date} at ${group.time}
-                    </small>
-                </div>
-                <button class="secondary-btn">Join</button>
-`               ;
+    card.style.background = "white";
+    card.style.padding = "15px";
+    card.style.borderRadius = "10px";
+    card.style.boxShadow = "0 4px 10px rgba(0,0,0,0.08)";
+    card.style.marginBottom = "15px";
+    card.style.display = "flex";
+    card.style.justifyContent = "space-between";
+    card.style.alignItems = "center";
 
-                card.querySelector("button").onclick = () => joinGroup(group.id);
+    card.innerHTML = `
+    <div>
+        <strong style="color: var(--blue);">${group.title}</strong><br>
+        <small style="color: var(--gray);">
+        ${group.subject} • ${group.date} at ${group.time}
+        </small>
+    </div>
+    <button class="secondary-btn" ${isJoined ? "disabled" : ""}>
+        ${isJoined ? "Joined" : "Join"}
+    </button>
+    `;
 
-                results.appendChild(card);
-            });
+    const button = card.querySelector("button");
+
+    button.onclick = () => joinGroup(group.id, button);
+
+    results.appendChild(card);
+});
         })
         .catch(err => {
             console.error(err);
@@ -99,15 +105,26 @@ function searchGroups() {
 }
 
 // JOIN GROUP
-function joinGroup(groupId) {
-    const userId = 1; // replace later
+function joinGroup(groupId, button) {
+    const userId = 1;
 
     fetch(`http://localhost:8080/groups/${groupId}/join/${userId}`, {
         method: "POST"
     })
     .then(res => {
         if (!res.ok) throw new Error("Join failed");
-        alert("Joined group!");
+
+        // save locally
+        let joinedGroups = JSON.parse(localStorage.getItem("joinedGroups")) || [];
+
+        if (!joinedGroups.includes(groupId)) {
+            joinedGroups.push(groupId);
+            localStorage.setItem("joinedGroups", JSON.stringify(joinedGroups));
+        }
+
+        // update UI
+        button.innerText = "Joined";
+        button.disabled = true;
     })
     .catch(err => {
         console.error(err);
