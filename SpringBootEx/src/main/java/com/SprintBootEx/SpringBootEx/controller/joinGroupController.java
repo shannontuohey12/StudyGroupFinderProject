@@ -15,21 +15,18 @@ import com.SprintBootEx.SpringBootEx.service.UserService;
 public class joinGroupController {
 
     @Autowired
-    private StudyGroupService service;
-
-    @Autowired
     private UserService userService;
 
     @Autowired
     private StudyGroupService groupService;
 
     @Autowired
-    private StudyGroupRepository StudyGroupRepository;
+    private StudyGroupRepository studyGroupRepository;
 
-    @PostMapping("/groups")
-    @RequestMapping("/groups")
+    @PostMapping
     public StudyGroup createGroup(@RequestBody StudyGroup group) {
-    return StudyGroupRepository.save(group);
+    System.out.println("POST /groups hit");
+    return studyGroupRepository.save(group);
 }
 
     @GetMapping("/users/{userId}/groups")
@@ -37,7 +34,7 @@ public class joinGroupController {
     return userService.getUserGroups(userId);
 }
 
-    @DeleteMapping("/groups/{groupId}")
+    @DeleteMapping("/{groupId}")
     public void deleteGroup(@PathVariable Long groupId) {
     groupService.deleteGroup(groupId);
 }
@@ -47,6 +44,6 @@ public class joinGroupController {
         @PathVariable Long groupId,
         @PathVariable Long userId
     ) {
-        return service.joinGroup(groupId, userId);
+        return groupService.joinGroup(groupId, userId);
     }
 }
