@@ -23,13 +23,28 @@ public class StudyGroupService {
         StudyGroup group = groupRepo.findById(groupId).orElseThrow();
         User user = userRepo.findById(userId).orElseThrow();
 
-        group.getUsers().add(user);
-        user.getGroups().add(group);
+        if (!group.getUsers().contains(user)) {
+            group.getUsers().add(user);
+        }
+
+        if (!user.getGroups().contains(group)) {
+            user.getGroups().add(group);
+        }
 
         System.out.println("User " + userId + " joined group " + groupId);
         return groupRepo.save(group);
     }
 
+    public StudyGroup leaveGroup(Long groupId, Long userId) {
+        StudyGroup group = groupRepo.findById(groupId).orElseThrow();
+        User user = userRepo.findById(userId).orElseThrow();
+
+        group.getUsers().removeIf(u -> u.getId().equals(userId));
+        user.getGroups().removeIf(g -> g.getId().equals(groupId));
+
+        userRepo.save(user);
+        return groupRepo.save(group);
+    }
     public StudyGroup createGroup(StudyGroup group) {
         return groupRepo.save(group);
     }

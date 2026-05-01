@@ -56,4 +56,11 @@ public List<StudyGroup> searchGroups(@RequestParam(required = false) String quer
     ) {
         return groupService.joinGroup(groupId, userId);
     }
+    @PostMapping("/{groupId}/leave/{userId}")
+    public StudyGroup leaveGroup(
+            @PathVariable Long groupId,
+            @PathVariable Long userId
+    ) {
+        return groupService.leaveGroup(groupId, userId);
+    }
 }
