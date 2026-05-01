@@ -41,4 +41,14 @@ public class StudyGroupService {
     public void deleteGroup(Long groupId) {
     groupRepo.deleteById(groupId);
 }
+
+    public void viewStudyGroups() {
+        List<StudyGroup> groups = groupRepo.findAll();
+        System.out.println("Study Groups:");
+        for (StudyGroup group : groups) {
+            System.out.println("ID: " + group.getId() + ", Title: " + group.getTitle() + ", Subject: " + group.getSubject());
+        }
+    }
+
+
 }
