@@ -1,5 +1,6 @@
 package com.SprintBootEx.SpringBootEx.service;
 
+import com.SprintBootEx.SpringBootEx.factory.StudyGroupFactory;
 import com.SprintBootEx.SpringBootEx.model.*;
 import com.SprintBootEx.SpringBootEx.repository.*;
 
@@ -17,20 +18,40 @@ public class StudyGroupService {
     @Autowired
     private UserRepository userRepo;
 
+    @Autowired
+    private StudyGroupFactory groupFactory;
+
     public StudyGroup joinGroup(Long groupId, Long userId) {
         System.out.println("Joining group " + groupId + " with user " + userId);
 
         StudyGroup group = groupRepo.findById(groupId).orElseThrow();
         User user = userRepo.findById(userId).orElseThrow();
 
-        group.getUsers().add(user);
-        user.getGroups().add(group);
+        if (!group.getUsers().contains(user)) {
+            group.getUsers().add(user);
+        }
+
+        if (!user.getGroups().contains(group)) {
+            user.getGroups().add(group);
+        }
 
         System.out.println("User " + userId + " joined group " + groupId);
         return groupRepo.save(group);
     }
 
-    public StudyGroup createGroup(StudyGroup group) {
+    public StudyGroup leaveGroup(Long groupId, Long userId) {
+        StudyGroup group = groupRepo.findById(groupId).orElseThrow();
+        User user = userRepo.findById(userId).orElseThrow();
+
+        group.getUsers().removeIf(u -> u.getId().equals(userId));
+        user.getGroups().removeIf(g -> g.getId().equals(groupId));
+
+        userRepo.save(user);
+        return groupRepo.save(group);
+    }
+
+    public StudyGroup createGroup(String title, String subject, String date, String time) {
+        StudyGroup group = groupFactory.createStudyGroup(title, subject, date, time);
         return groupRepo.save(group);
     }
 
@@ -39,16 +60,6 @@ public class StudyGroupService {
     }
 
     public void deleteGroup(Long groupId) {
-    groupRepo.deleteById(groupId);
-}
-
-    public void viewStudyGroups() {
-        List<StudyGroup> groups = groupRepo.findAll();
-        System.out.println("Study Groups:");
-        for (StudyGroup group : groups) {
-            System.out.println("ID: " + group.getId() + ", Title: " + group.getTitle() + ", Subject: " + group.getSubject());
-        }
+        groupRepo.deleteById(groupId);
     }
-
-
 }
