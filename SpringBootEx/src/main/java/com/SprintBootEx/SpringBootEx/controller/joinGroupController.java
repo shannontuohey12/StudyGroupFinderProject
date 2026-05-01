@@ -26,12 +26,7 @@ public class joinGroupController {
     @PostMapping
 public StudyGroup createGroup(@RequestBody StudyGroup group) {
     System.out.println("POST /groups hit");
-    return groupService.createGroup(
-        group.getTitle(), 
-        group.getSubject(), 
-        group.getDate(), 
-        group.getTime()
-    );
+    return groupService.createGroup(group);
 }
 
     @GetMapping("/users/{userId}/groups")

@@ -39,21 +39,17 @@ public class StudyGroupService {
         return groupRepo.save(group);
     }
 
-    public StudyGroup leaveGroup(Long groupId, Long userId) {
-        StudyGroup group = groupRepo.findById(groupId).orElseThrow();
-        User user = userRepo.findById(userId).orElseThrow();
-
-        group.getUsers().removeIf(u -> u.getId().equals(userId));
-        user.getGroups().removeIf(g -> g.getId().equals(groupId));
-
-        userRepo.save(user);
-        return groupRepo.save(group);
+    public StudyGroup createGroup(StudyGroup group){
+        System.out.println("Creating group with title: " + group.getTitle());
+        StudyGroup newGroup = groupFactory.createStudyGroup(
+            group.getTitle(), 
+            group.getSubject(), 
+            group.getDate(), 
+            group.getTime()
+        );
+        return groupRepo.save(newGroup);
     }
 
-    public StudyGroup createGroup(String title, String subject, String date, String time) {
-        StudyGroup group = groupFactory.createStudyGroup(title, subject, date, time);
-        return groupRepo.save(group);
-    }
 
     public List<StudyGroup> getAllGroups() {
         return groupRepo.findAll();
@@ -62,4 +58,6 @@ public class StudyGroupService {
     public void deleteGroup(Long groupId) {
         groupRepo.deleteById(groupId);
     }
+
+    
 }

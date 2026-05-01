@@ -85,11 +85,16 @@
         ${group.subject} • ${group.date} at ${group.time}
         </small>
     </div>
+<<<<<<< HEAD
 <button class="secondary-btn" data-joined="${isJoined}">
+=======
+    <button class="secondary-btn" data-joined="${isJoined}">
+>>>>>>> origin/main
         ${isJoined ? "Joined" : "Join"}
     </button>
     `;
 
+<<<<<<< HEAD
                         const button = card.querySelector("button");
 
                         button.onclick = () => {
@@ -109,6 +114,63 @@
         // JOIN GROUP
         function joinGroup(groupId, button) {
             const userId = 1;
+=======
+    const button = card.querySelector("button");
+button.onclick = () => {
+    const isJoinedNow = button.dataset.joined === "true";
+    toggleJoin(group.id, button, isJoinedNow);
+};
+
+    results.appendChild(card);
+});
+        })
+        .catch(err => {
+            console.error(err);
+            alert("Error loading groups");
+        });
+}
+
+// JOIN GROUP
+function toggleJoin(groupId, button, isJoined) {
+    const userId = 65;
+
+    if (!isJoined) {
+        // JOIN
+        fetch(`http://localhost:8080/groups/${groupId}/join/${userId}`, {
+            method: "POST"
+        })
+        .then(res => {
+            if (!res.ok) throw new Error("Join failed");
+
+            let joinedGroups = JSON.parse(localStorage.getItem("joinedGroups")) || [];
+            if (!joinedGroups.includes(groupId)) {
+                joinedGroups.push(groupId);
+                localStorage.setItem("joinedGroups", JSON.stringify(joinedGroups));
+            }
+
+            button.innerText = "Joined";
+            button.dataset.joined = "true"; // track state
+        })
+        .catch(err => {
+            console.error(err);
+            alert("Could not join group");
+        });
+
+    } else {
+        // UNJOIN (frontend + optional backend)
+        fetch(`http://localhost:8080/groups/${groupId}/leave/${userId}`, {
+            method: "POST"
+        }).catch(() => {}); // ignore if you don’t have this endpoint yet
+
+        let joinedGroups = JSON.parse(localStorage.getItem("joinedGroups")) || [];
+        joinedGroups = joinedGroups.filter(id => id !== groupId);
+        localStorage.setItem("joinedGroups", JSON.stringify(joinedGroups));
+
+        button.innerText = "Join";
+        button.dataset.joined = "false";
+    }
+}
+>>>>>>> origin/main
 
             function toggleJoin(groupId, button, isJoined) {
                 const userId = 65;

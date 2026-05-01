@@ -21,14 +21,12 @@ public class SpringBootExApplication {
         return args -> {
 
             // Create User
-            User user = userRepo.findByEmail("shannon@test.com").orElseGet(() -> {
-                User newUser = new User();
-                newUser.setName("Shannon");
-                newUser.setEmail("shannon@test.com");
-                newUser.setMajor("Computer Science");
-                newUser.setPassword("password");
-                return userRepo.save(newUser);
-            });
+            User user = new User();
+            user.setName("Shannon");
+            user.setEmail("shannon@test.com");
+            user.setMajor("Computer Science");
+			user.setPassword("password");
+            userRepo.save(user);
 
             if (groupRepo.count() == 0) {
                 StudyGroup group = new StudyGroup();
