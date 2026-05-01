@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Find Study Groups</title>
+
+    <!-- YOUR CSS -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+    <div class="logo">StudyNest</div>
+    <ul class="nav-links">
+        <li><a href="./home.html">Home</a></li>
+        <li><a href="./login.html">Login</a></li>
+        <li><a href="./findGroup.html">Find Groups</a></li>
+        <li><a href="./createGroup.html">Create Group</a></li>
+
+    </ul>
+</nav>
+
+<!-- MAIN SECTION -->
+<section class="form-section">
+    <h2>Find a Study Group</h2>
+
+    <div class="group-form">
+        <input 
+            id="searchInput" 
+            placeholder="Search groups (e.g. Math, CS...)"
+        >
+
+        <button class="primary-btn" onclick="searchGroups()">
+            Search
+        </button>
+    </div>
+
+    <!-- RESULTS -->
+    <div id="results" style="margin-top: 30px; width: 100%; max-width: 500px;"></div>
+</section>
+
+<div class="search-help">
+  <p>
+    Click <strong>Search</strong> to view all available study groups, or enter
+    keywords to find specific ones.
+  </p>
+</div>
+
+<script>
+function searchGroups() {
+    const query = document.getElementById("searchInput").value;
+
+    fetch(`http://localhost:8080/groups/search?query=${query}`)
+        .then(res => {
+            if (!res.ok) throw new Error("Failed to fetch groups");
+            return res.json();
+        })
+        .then(groups => {
+            const results = document.getElementById("results");
+            results.innerHTML = "";
+
+            if (groups.length === 0) {
+                results.innerHTML = "<p style='text-align:center; color: var(--gray);'>No groups found 😕</p>";
+                return;
+            }
+            const joinedGroups = JSON.parse(localStorage.getItem("joinedGroups")) || [];
+            groups.forEach(group => {
+    const isJoined = joinedGroups.includes(group.id);
+
+    const card = document.createElement("div");
+
+    card.style.background = "white";
+    card.style.padding = "15px";
+    card.style.borderRadius = "10px";
+    card.style.boxShadow = "0 4px 10px rgba(0,0,0,0.08)";
+    card.style.marginBottom = "15px";
+    card.style.display = "flex";
+    card.style.justifyContent = "space-between";
+    card.style.alignItems = "center";
+
+    card.innerHTML = `
+    <div>
+        <strong style="color: var(--blue);">${group.title}</strong><br>
+        <small style="color: var(--gray);">
+        ${group.subject} • ${group.date} at ${group.time}
+        </small>
+    </div>
+    <button class="secondary-btn" ${isJoined ? "disabled" : ""}>
+        ${isJoined ? "Joined" : "Join"}
+    </button>
+    `;
+
+    const button = card.querySelector("button");
+
+    button.onclick = () => joinGroup(group.id, button);
+
+    results.appendChild(card);
+});
+        })
+        .catch(err => {
+            console.error(err);
+            alert("Error loading groups");
+        });
+}
+
+// JOIN GROUP
+function joinGroup(groupId, button) {
+    const userId = 1;
+
+    fetch(`http://localhost:8080/groups/${groupId}/join/${userId}`, {
+        method: "POST"
+    })
+    .then(res => {
+        if (!res.ok) throw new Error("Join failed");
+
+        // save locally
+        let joinedGroups = JSON.parse(localStorage.getItem("joinedGroups")) || [];
+
+        if (!joinedGroups.includes(groupId)) {
+            joinedGroups.push(groupId);
+            localStorage.setItem("joinedGroups", JSON.stringify(joinedGroups));
+        }
+
+        // update UI
+        button.innerText = "Joined";
+        button.disabled = true;
+    })
+    .catch(err => {
+        console.error(err);
+        alert("Could not join group");
+    });
+}
+
+</script>
+
+</body>
+</html>

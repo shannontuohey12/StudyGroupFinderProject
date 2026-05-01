@@ -12,7 +12,10 @@
     <nav class="navbar">
         <h1 class="logo">StudyNest</h1>
         <ul class="nav-links">
-            <li><a href="home.html">Home</a></li>
+            <li><a href="./home.html">Home</a></li>
+            <li><a href="./login.html">Login</a></li>
+            <li><a href="./findGroup.html">Find Groups</a></li>
+            <li><a href="./createGroup.html">Create Group</a></li>
         </ul>
     </nav>
 
@@ -30,7 +33,7 @@
 
             <input type="time" id="time" required>
 
-            <button type="button" class="primary-btn" onclick="createGroup()">Create Group</button>
+            <button type="button" class="primary-btn" onclick="createGroup(event)">Create Group</button>
 
         </form>
 
@@ -38,13 +41,13 @@
     </section>
 
     <script>
-        function createGroup() {
+        function createGroup(event) {
             event.preventDefault();
 
     const title = document.getElementById("title").value;
     const subject = document.getElementById("subject").value;
-    const description = document.getElementById("date").value;
-    const maxMembers = document.getElementById("time").value;
+    const date = document.getElementById("date").value;
+    const time = document.getElementById("time").value;
 
     fetch("http://localhost:8080/groups", {
         method: "POST",

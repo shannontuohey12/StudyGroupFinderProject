@@ -18,9 +18,6 @@ import java.util.List;
 public class joinGroupController {
 
     @Autowired
-    private StudyGroupService service;
-
-    @Autowired
     private UserService userService;
 
     @Autowired
@@ -32,27 +29,26 @@ public class joinGroupController {
     private final StudyGroupFactory factory = new ConcreteStudyGroupFactory();
 
     @PostMapping("/groups")
+    @RequestMapping("/groups")
     public StudyGroup createGroup(@RequestBody StudyGroup group) {
-        // Use the factory to create a StudyGroup
-        StudyGroup newGroup = factory.createStudyGroup(group.getTitle(), group.getSubject());
-        return StudyGroupRepository.save(newGroup);
-    }
+    return StudyGroupRepository.save(group);
+}
 
     @GetMapping("/users/{userId}/groups")
     public List<StudyGroup> getUserGroups(@PathVariable Long userId) {
         return userService.getUserGroups(userId);
     }
 
-    @DeleteMapping("/groups/{groupId}")
+    @DeleteMapping("/{groupId}")
     public void deleteGroup(@PathVariable Long groupId) {
-        groupService.deleteGroup(groupId);
-    }
+    groupService.deleteGroup(groupId);
+}
 
     @PostMapping("/{groupId}/join/{userId}")
     public StudyGroup joinGroup(
         @PathVariable Long groupId,
         @PathVariable Long userId
     ) {
-        return service.joinGroup(groupId, userId);
+        return groupService.joinGroup(groupId, userId);
     }
 }

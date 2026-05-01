@@ -20,19 +20,19 @@ public class userController {
     public User login(@RequestBody User loginRequest) {
     return userService.login(loginRequest.getEmail(), loginRequest.getPassword());
 }
-    // 👤 Create user
+    // Create user
     @PostMapping
     public User createUser(@RequestBody User user) {
         return userService.createUser(user);
     }
 
-    // 👀 Get user by id
+    // Get user by id
     @GetMapping("/{id}")
     public User getUserById(@PathVariable Long id) {
         return userService.getUserById(id);
     }
 
-    // 📋 Get all users
+    // Get all users
     @GetMapping
     public List<User> getAllUsers() {
         return userService.getAllUsers();
